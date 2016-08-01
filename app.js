@@ -1,6 +1,8 @@
 var config = {
     api_key     : process.env.API_KEY,
     api_secret  : process.env.API_SECRET,
+    ws_port     : process.env.WS_PORT,
+    http_port   : process.env.HTTP_PORT,
     db : {
         user    : process.env.DB_USER,
         pass    : process.env.DB_PASS,
@@ -10,6 +12,7 @@ var config = {
     }
 };
 
+console.log(config);
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io').listen(app.listen(3000));
@@ -45,28 +48,39 @@ app.get('/', function(req, res, next) {
 app.post('/notifications', function(req, res, next) {
     // Check  supplied API Key
     var api_key = req.headers['x-notif-api-key'];
-    console.log(api_key);
+    var uid = req.headers['x-notif-user-id'];
+    if(api_key !== config.api_key) {
+        console.log("Invalid API Key supplied");
+        return res.send(JSON.stringify({
+            error: "Invalid API Key"
+        }));
+    }
+
+    // Create the notification, and emit to registered clients
     db.collection('notifications').insertOne({
         "text"      : req.body.text,
         "link"      : req.body.link,
         "subject"   : req.body.subject,
         "unread"    : false,
-        "user_id"   : req.body.user_id,
+        "user_id"   : uid,
         "created_at": Date.now()
     }, function(err, result) {
         if(err) return console.log(err);
-        var uid = req.body.user_id;
+        if(!sockets[uid]) {
+            console.log("No clients connected for user "+uid);
+            return res.end();
+        }
         for(var i = 0; i < sockets[uid].length; i++) {
             sockets[uid][i].emit("notification", {
                 'text' : req.body.text,
                 'link' : req.body.link,
-                'subject' : req.body.subject,
-                'user_id' : req.body.user_id
+                'subject' : req.body.subject
             });
         }
         res.send();
     });
 })
+
 app.listen(8080);
 
 /**
@@ -74,12 +88,9 @@ app.listen(8080);
  */
 io.on('connection', function(socket) {
     var user_id = socket.request._query['user'];
+    console.log("Connection for "+user_id);
     if(!sockets[user_id]) sockets[user_id] = [];
     sockets[user_id].push(socket);
+    console.log("Socket connected successfully");
     socket.emit('onload', 'success');
-    // var cursor = db.collection('notifications').find({user_id:user_id}).sort({created_at:1}).limit(20);
-    // cursor.each(function(err, doc) {
-    //     if(err) return console.log(err);
-    //     socket.emit("onload", doc);
-    // })
 })

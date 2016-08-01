@@ -20,10 +20,10 @@
     	    var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
     	    return result && unescape(result[1]) || "";
         };
-        var socket = io.connect({query : "user="+user.id});
+        var socket = io.connect({query : "user="+get_vars.notif_key});
         var $pre = $('pre');
 
-        $pre.text( $pre.text() + "Noticication widget for user "+get_vars.user);
+        $pre.text( $pre.text() + "Noticication widget for user "+get_vars.notif_key);
 
         socket.on('notification', function (data) {
           $pre.text( $pre.text() + JSON.stringify(data) + '\n' );
