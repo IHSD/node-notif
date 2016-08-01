@@ -32,7 +32,9 @@ var sockets = [];
  */
 var mongo = require('mongodb');
 var db;
-mongo.connect("mongodb://"+config.db.host+":"+config.db.port+"/"+config.db.name, function(err, database) {
+var mongodsn = "mongodb://"+config.db.host+":"+config.db.port+"/"+config.db.name;
+console.log(mongodsn);
+mongo.connect(mongodsn, function(err, database) {
     if(err) return console.log(err);
     db = database;
 });

@@ -6,6 +6,8 @@ function gen_string() {
     for i in {0..31}; do string+=$(printf "%x" $(($RANDOM%16)) ); done;  echo $string
 }
 
+FILENAME='/opt/.env'
+
 API_KEY=$(gen_string)
 API_SECRET=$(gen_string)
 DB_PASS=$(gen_string)
@@ -16,10 +18,10 @@ DB_NAME='notifications'
 WS_PORT=3000
 HTTP_PORT=8080
 
-export API_KEY=${API_KEY}
-export API_SECRET=${API_SCRET}
-export DB_HOST=${DB_HOST}
-export DB_USER=${DB_USER}
-export DB_PASS=${DB_PASS}
-export DB_PORT=${DB_PORT}
-export DB_NAME=${DB_NAME}
+echo "API_KEY=${API_KEY}"       >> ${FILENAME}
+echo "API_SECRET=${API_SECRET}" >> ${FILENAME}
+echo "DB_HOST=${DB_HOST}"       >> ${FILENAME}
+echo "DB_USER=${DB_USER}"       >> ${FILENAME}
+echo "DB_PASS=${DB_PASS}"       >> ${FILENAME}
+echo "DB_PORT=${DB_PORT}"       >> ${FILENAME}
+echo "DB_NAME=${DB_NAME}"       >> ${FILENAME}
