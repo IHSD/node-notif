@@ -33,6 +33,9 @@ By default, the server serves HTTP requests on 8080, and the Websocket on 3000. 
 | HTTP_PORT | Port to server HTTP requests |
 | WS_PORT | Port to server websockets |
 
+To generate a random set of variables:
+`chmod +x ./bin/gen_env.sh && ./bin/gen_env.sh`
+Add `--export=TRUE` if you want them exported to the system
 ### Authentication
 
 To create notifications, we need to specify 2 headers.

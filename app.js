@@ -12,7 +12,11 @@ var config = {
     }
 };
 
-console.log(config);
+console.log("----------------------------------");
+console.log("NodeJS Notification Server started");
+console.log("----------------------------------");
+console.log("API_KEY : "+config.api_key);
+console.log("API_SECRET : "+config.api_secret);
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io').listen(app.listen(3000));

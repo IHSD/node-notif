@@ -10,15 +10,15 @@ services:
         links:
             - mongodb
         environment:
-            - API_KEY=3C5F133AC0141FCF5B34DE492B219891F5472842C29DB5B3A2008E85730F70C0
-            - API_SECRET=9C876D8F99BC10C33C4C899AC031BA95AE43ABE68CE15BB175315EA8C683F2F5
-            - WS_PORT=8080
-            - HTTP_PORT=3000
-            - DB_USER=app_user
-            - DB_PASS=password
-            - DB_HOST=mongodb
-            - DB_PORT=27017
-            - DB_NAME=notifications
+            - API_KEY
+            - API_SECRET
+            - WS_PORT
+            - HTTP_PORT
+            - DB_USER
+            - DB_PASS
+            - DB_HOST
+            - DB_PORT
+            - DB_NAME
     data:
         image: 'ubuntu'
         volumes:
