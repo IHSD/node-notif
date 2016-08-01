@@ -4,11 +4,11 @@ var config = {
     ws_port     : process.env.WS_PORT,
     http_port   : process.env.HTTP_PORT,
     db : {
-        user    : process.env.DB_USER,
-        pass    : process.env.DB_PASS,
-        host    : process.env.DB_HOST,
-        name    : process.env.DB_NAME,
-        port    : process.env.DB_PORT
+        user    : process.env.MONGODB_USER,
+        pass    : process.env.MONGODB_PASS,
+        host    : process.env.MONGODB_HOST,
+        name    : process.env.MONGODB_NAME,
+        port    : process.env.MONGODB_PORT
     }
 };
 

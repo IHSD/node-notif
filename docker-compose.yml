@@ -14,11 +14,11 @@ services:
             - API_SECRET
             - WS_PORT
             - HTTP_PORT
-            - DB_USER
-            - DB_PASS
-            - DB_HOST
-            - DB_PORT
-            - DB_NAME
+            - MONGODB_USER
+            - MONGODB_PASS
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_NAME
     data:
         image: 'ubuntu'
         volumes:
@@ -40,6 +40,6 @@ services:
         ports:
             - "27017:27017"
         environment:
-            - MONGODB_USER=app_user
-            - MONGODB_PASS=password
-            - MONGODB_DATABASE=notifications
+            - MONGODB_USER
+            - MONGODB_PASS
+            - MONGODB_DATABASE

@@ -6,7 +6,7 @@ function gen_string() {
     for i in {0..31}; do string+=$(printf "%x" $(($RANDOM%16)) ); done;  echo $string
 }
 
-FILENAME='./.env'
+FILENAME='/opt/.env'
 API_KEY=$(gen_string)
 API_SECRET=$(gen_string)
 DB_PASS=$(gen_string)
@@ -24,3 +24,5 @@ echo "DB_USER=${DB_USER}"       >> ${FILENAME}
 echo "DB_PASS=${DB_PASS}"       >> ${FILENAME}
 echo "DB_PORT=${DB_PORT}"       >> ${FILENAME}
 echo "DB_NAME=${DB_NAME}"       >> ${FILENAME}
+
+if
