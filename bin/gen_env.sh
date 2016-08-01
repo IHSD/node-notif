@@ -20,8 +20,8 @@ HTTP_PORT=8080
 
 echo "API_KEY=${API_KEY}"       >> ${FILENAME}
 echo "API_SECRET=${API_SECRET}" >> ${FILENAME}
-echo "DB_HOST=${DB_HOST}"       >> ${FILENAME}
-echo "DB_USER=${DB_USER}"       >> ${FILENAME}
-echo "DB_PASS=${DB_PASS}"       >> ${FILENAME}
-echo "DB_PORT=${DB_PORT}"       >> ${FILENAME}
-echo "DB_NAME=${DB_NAME}"       >> ${FILENAME}
+echo "MONGODB_HOST=${DB_HOST}"       >> ${FILENAME}
+echo "MONGODB_USER=${DB_USER}"       >> ${FILENAME}
+echo "MONGODB_PASS=${DB_PASS}"       >> ${FILENAME}
+echo "MONGODB_PORT=${DB_PORT}"       >> ${FILENAME}
+echo "MONGODB_NAME=${DB_NAME}"       >> ${FILENAME}
