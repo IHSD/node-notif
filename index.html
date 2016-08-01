@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <style type="text/css">
+      pre {background-color:rgba(0,0,0,0.2); padding:10px;}
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery.js"></script>
+
+    <script>
+    $(function() {
+        if(!Notification) {
+            alert("Your browser does not support Desktop notifications");
+            return;
+        }
+        if(Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+        var get_vars = getUrlVars();
+        $.getUrlVar = function(key){
+    	    var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search);
+    	    return result && unescape(result[1]) || "";
+        };
+        var socket = io.connect({query : "user="+user.id});
+        var $pre = $('pre');
+
+        $pre.text( $pre.text() + "Noticication widget for user "+get_vars.user);
+
+        socket.on('notification', function (data) {
+          $pre.text( $pre.text() + JSON.stringify(data) + '\n' );
+          if(Notification.permission === 'granted') {
+              // Create the desktop notification
+              var notif = new Notification(data.subject, {
+                  icon: 'https://scontent-iad3-1.xx.fbcdn.net/v/t1.0-9/247100_785693508182645_1798798592643471282_n.jpg?oh=2097156b598ff4792c902d1345d19492&oe=5828DF72',
+                  body: data.text
+              })
+          }
+          socket.emit('my other event', { my: 'data' });
+        });
+
+        function getUrlVars() {
+          var vars = {};
+          var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+              vars[key] = value;
+          });
+          return vars;
+        }
+    });
+    </script>
+
+  </head>
+  <body>
+    <h1>socket.io example</h1>
+    <pre>..output here..
+
+    </pre>
+  </body>
+<html>

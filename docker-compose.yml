@@ -1,0 +1,45 @@
+version: "2"
+
+services:
+    app:
+        build: ./
+        volumes:
+            - ./:/usr/src/app
+        ports:
+            - "3000:3000"
+        links:
+            - mongodb
+        environment:
+            - API_KEY=3C5F133AC0141FCF5B34DE492B219891F5472842C29DB5B3A2008E85730F70C0
+            - API_SECRET=9C876D8F99BC10C33C4C899AC031BA95AE43ABE68CE15BB175315EA8C683F2F5
+            - WEBSOCKET_PORT=8080
+            - HTTP_PORT=3000
+            - DB_USER=
+            - DB_PASS=
+            - DB_HOST=mongodb
+            - DB_PORT=27017
+            - DB_NAME=notifications
+    data:
+        image: 'ubuntu'
+        volumes:
+            - /var/lib/mysql:/var/lib/mysql
+            - /var/lib/postgres:/var/lib/postgres
+            - /var/lib/mariadb:/var/lib/mariadb
+            - /var/lib/memcached:/var/lib/memcached
+            - /var/lib/redis:/data
+            - /var/lib/neo4j:/var/lib/neo4j/data
+            - /var/lib/mongo:/data/db
+        command: ["true"]
+
+    mongodb:
+        image: mongo
+        expose:
+            - "3306"
+        volumes_from:
+            - data
+        ports:
+            - "27017:27017"
+        environment:
+            - MONGODB_USER=app_user
+            - MONGODB_PASS=password
+            - MONGODB_DATABASE=notifications
