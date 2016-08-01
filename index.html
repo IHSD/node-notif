@@ -26,6 +26,7 @@
         $pre.text( $pre.text() + "Noticication widget for user "+get_vars.notif_key);
 
         socket.on('notification', function (data) {
+            console.log(data);
           $pre.text( $pre.text() + JSON.stringify(data) + '\n' );
           if(Notification.permission === 'granted') {
               // Create the desktop notification

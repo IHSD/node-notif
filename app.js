@@ -77,11 +77,13 @@ app.post('/notifications', function(req, res, next) {
             return res.end();
         }
         for(var i = 0; i < sockets[uid].length; i++) {
-            sockets[uid][i].emit("notification", {
+            var notif_data = {
                 'text' : req.body.text,
                 'link' : req.body.link,
                 'subject' : req.body.subject
-            });
+            };
+            console.log(notif_data);
+            sockets[uid][i].emit("notification", notif_data);
         }
         res.send();
     });
