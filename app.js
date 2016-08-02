@@ -9,6 +9,11 @@ var config = {
         host    : process.env.MONGODB_HOST,
         name    : process.env.MONGODB_NAME,
         port    : process.env.MONGODB_PORT
+    },
+    ssl : {
+        key     : process.env.SSL_KEY,
+        cert    : process.env.SSL_CERT,
+        ca      : process.env.SSL_CA
     }
 };
 
@@ -17,11 +22,25 @@ console.log("NodeJS Notification Server started");
 console.log("----------------------------------");
 console.log("API_KEY : "+config.api_key);
 console.log("API_SECRET : "+config.api_secret);
+var fs = require('fs');
 var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io').listen(app.listen(3000));
-var parser = require('body-parser');
+var https = require('https');
+var port = 8443;
+var options = {
+    key: fs.readFileSync(config.ssl.key),
+    cert: fs.readFileSync(config.ssl.cert),
+    //ca: fs.readFileSync(config.ssl.ca),
+    rejectUnauthorized: false,
+    requestCert: false
+};
+if(config.ssl.ca) options.ca = fs.readFileSync(config.ssl.ca);
 
+var server = https.createServer(options, app).listen(port, function(){
+  console.log("Express server listening on port " + port);
+});
+var io = require('socket.io')(server);
+var parser = require('body-parser');
+server.listen(port);
 /**
  * Our connected sockets
  */
@@ -33,7 +52,6 @@ var sockets = [];
 var mongo = require('mongodb');
 var db;
 var mongodsn = "mongodb://"+config.db.host+":"+config.db.port+"/"+config.db.name;
-console.log(mongodsn);
 mongo.connect(mongodsn, function(err, database) {
     if(err) return console.log(err);
     db = database;
@@ -52,6 +70,8 @@ app.get('/', function(req, res, next) {
  * Create notification
  */
 app.post('/notifications', function(req, res, next) {
+    console.log("Notification received");
+    console.log(req.body);
     // Check  supplied API Key
     var api_key = req.headers['x-notif-api-key'];
     var uid = req.headers['x-notif-user-id'];
@@ -82,15 +102,11 @@ app.post('/notifications', function(req, res, next) {
                 'link' : req.body.link,
                 'subject' : req.body.subject
             };
-            console.log(notif_data);
             sockets[uid][i].emit("notification", notif_data);
         }
         res.send();
     });
 })
-
-app.listen(8080);
-
 /**
  * Handle socket connections
  */
