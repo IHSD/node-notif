@@ -7,8 +7,6 @@ services:
             - ./:/usr/src/app
         ports:
             - "8443:8443"
-        links:
-            - mongodb
         environment:
             - API_KEY
             - API_SECRET
