@@ -1,6 +1,8 @@
 version: "2"
 
 services:
+    nginx:
+
     app:
         build: ./
         volumes:
@@ -22,27 +24,16 @@ services:
             - SSL_KEY=/usr/src/app/certs/key.pem
             - SSL_CERT=/usr/src/app/certs/cert.pem
             - SSL_CA=/usr/src/app/certs/ca-bundle
-    data:
-        image: 'ubuntu'
-        volumes:
-            - /var/lib/mysql:/var/lib/mysql
-            - /var/lib/postgres:/var/lib/postgres
-            - /var/lib/mariadb:/var/lib/mariadb
-            - /var/lib/memcached:/var/lib/memcached
-            - /var/lib/redis:/data
-            - /var/lib/neo4j:/var/lib/neo4j/data
-            - /var/lib/mongo:/data/db
-        command: ["true"]
-
     mongodb:
         image: mongo
         expose:
             - "3306"
-        volumes_from:
-            - data
+        volumes:
+            - /var/lib/mongo:/data/db
         ports:
             - "27017:27017"
         environment:
             - MONGODB_USER
             - MONGODB_PASS
             - MONGODB_NAME
+        command: --auth
