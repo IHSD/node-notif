@@ -42,7 +42,6 @@ var sockets = [];
 app.use(parser.json());
 
 app.get('/admin/connections', function(req, res, next) {
-    console.log(sockets);
     res.send(JSON.stringify({
         sockets: sockets
     }));
@@ -65,14 +64,13 @@ app.post('/notifications', function(req, res, next) {
         console.log("No clients connected for user "+uid);
         return res.end();
     }
-    for(var i = 0; i < sockets[uid].length; i++) {
-        var notif_data = {
-            'text' : req.body.text,
-            'link' : req.body.link,
-            'subject' : req.body.subject
-        };
-        sockets[uid][i].emit("notification", notif_data);
-    }
+    var socket = sockets[uid][0];
+    var notif_data = {
+        'text' : req.body.text,
+        'link' : req.body.link,
+        'subject' : req.body.subject
+    };
+    socket.emit("notification", notif_data);
     res.send();
 })
 
