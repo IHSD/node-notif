@@ -42,6 +42,7 @@ var sockets = [];
 app.use(parser.json());
 
 app.get('/admin/connections', function(req, res, next) {
+    console.log(sockets);
     res.send(JSON.stringify({
         sockets: sockets
     }));
