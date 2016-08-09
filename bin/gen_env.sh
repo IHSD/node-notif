@@ -2,6 +2,9 @@
 #
 # We need to create a new environment file with random values
 #
+# TO read to environmemt, run `export $(cat .env | xargs)` then start server
+#
+
 function gen_string() {
     for i in {0..31}; do string+=$(printf "%x" $(($RANDOM%16)) ); done;  echo $string
 }
@@ -10,18 +13,6 @@ FILENAME='/opt/.env'
 
 API_KEY=$(gen_string)
 API_SECRET=$(gen_string)
-DB_PASS=$(gen_string)
-DB_HOST="mongodb"
-DB_USER='app_user'
-DB_PORT=27017
-DB_NAME='notifications'
-WS_PORT=3000
-HTTP_PORT=8080
 
 echo "API_KEY=${API_KEY}"       >> ${FILENAME}
 echo "API_SECRET=${API_SECRET}" >> ${FILENAME}
-echo "MONGODB_HOST=${DB_HOST}"       >> ${FILENAME}
-echo "MONGODB_USER=${DB_USER}"       >> ${FILENAME}
-echo "MONGODB_PASS=${DB_PASS}"       >> ${FILENAME}
-echo "MONGODB_PORT=${DB_PORT}"       >> ${FILENAME}
-echo "MONGODB_NAME=${DB_NAME}"       >> ${FILENAME}

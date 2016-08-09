@@ -3,13 +3,6 @@ var config = {
     api_secret  : process.env.API_SECRET,
     ws_port     : process.env.WS_PORT,
     http_port   : process.env.HTTP_PORT,
-    db : {
-        user    : process.env.MONGODB_USER,
-        pass    : process.env.MONGODB_PASS,
-        host    : process.env.MONGODB_HOST,
-        name    : process.env.MONGODB_NAME,
-        port    : process.env.MONGODB_PORT
-    },
     ssl : {
         key     : process.env.SSL_KEY,
         cert    : process.env.SSL_CERT,
@@ -46,32 +39,17 @@ server.listen(port);
  */
 var sockets = [];
 
-/**
- * Instantiate our DB connection
- */
-var mongo = require('mongodb');
-var db;
-var mongodsn = "mongodb://"+config.db.host+":"+config.db.port+"/"+config.db.name;
-mongo.connect(mongodsn, function(err, database) {
-    if(err) return console.log(err);
-    db = database;
-});
-
 app.use(parser.json());
 
-/**
- * Render our test home page
- */
-app.get('/', function(req, res, next) {
-    res.sendFile(__dirname+"/index.html");
+app.get('/admin/connections', function(req, res, next) {
+    res.send(JSON.stringify({
+        sockets: sockets
+    }));
 })
-
 /**
  * Create notification
  */
 app.post('/notifications', function(req, res, next) {
-    console.log("Notification received");
-    console.log(req.body);
     // Check  supplied API Key
     var api_key = req.headers['x-notif-api-key'];
     var uid = req.headers['x-notif-user-id'];
@@ -82,31 +60,21 @@ app.post('/notifications', function(req, res, next) {
         }));
     }
 
-    // Create the notification, and emit to registered clients
-    db.collection('notifications').insertOne({
-        "text"      : req.body.text,
-        "link"      : req.body.link,
-        "subject"   : req.body.subject,
-        "unread"    : false,
-        "user_id"   : uid,
-        "created_at": Date.now()
-    }, function(err, result) {
-        if(err) return console.log(err);
-        if(!sockets[uid]) {
-            console.log("No clients connected for user "+uid);
-            return res.end();
-        }
-        for(var i = 0; i < sockets[uid].length; i++) {
-            var notif_data = {
-                'text' : req.body.text,
-                'link' : req.body.link,
-                'subject' : req.body.subject
-            };
-            sockets[uid][i].emit("notification", notif_data);
-        }
-        res.send();
-    });
+    if(!sockets[uid]) {
+        console.log("No clients connected for user "+uid);
+        return res.end();
+    }
+    for(var i = 0; i < sockets[uid].length; i++) {
+        var notif_data = {
+            'text' : req.body.text,
+            'link' : req.body.link,
+            'subject' : req.body.subject
+        };
+        sockets[uid][i].emit("notification", notif_data);
+    }
+    res.send();
 })
+
 /**
  * Handle socket connections
  */
