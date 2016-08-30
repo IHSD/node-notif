@@ -26,6 +26,7 @@ var options = {
     rejectUnauthorized: false,
     requestCert: false
 };
+
 if(config.ssl.ca) options.ca = fs.readFileSync(config.ssl.ca);
 
 var server = https.createServer(options, app).listen(port, function(){
