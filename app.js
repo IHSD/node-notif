@@ -91,6 +91,9 @@ app.post('/trigger', funtion(req, res, next) {
 
   var socket = sockets[uid][0];
   var notif_data = req.body;
+  console.log("Emitting socket event");
+  console.log(notif_data);
+  console.log(event);
   socket.emit(event, notif_data);
   res.end();
 })
