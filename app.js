@@ -74,14 +74,33 @@ app.post('/notifications', function(req, res, next) {
     res.send();
 })
 
+app.post('/trigger', funtion(req, res, next) {
+  var api_key = req.headers['x-notif-api-key'];
+  var uid = req.headers['x-notif-user-id'];
+  var event = req.headers['x-notif-event'];
+  if(api_key !== config.api_key) {
+    console.log("Trigger event received");
+    return res.json({
+      error: "Invalid API Key"
+    });
+  }
+
+  if(!sockets[uid]) {
+    return res.end();
+  }
+
+  var socket = sockets[uid][0];
+  var notif_data = req.body;
+  socket.emit(event, notif_data);
+  res.end();
+})
+
 /**
  * Handle socket connections
  */
 io.on('connection', function(socket) {
     var user_id = socket.request._query['user'];
-    console.log("Connection for "+user_id);
     if(!sockets[user_id]) sockets[user_id] = [];
     sockets[user_id].push(socket);
-    console.log("Socket connected successfully");
     socket.emit('onload', 'success');
 })
