@@ -72,9 +72,9 @@ app.post('/notifications', function(req, res, next) {
     };
     socket.emit("notification", notif_data);
     res.send();
-})
+});
 
-app.post('/trigger', funtion(req, res, next) {
+app.post('/trigger', function(req, res, next) {
   var api_key = req.headers['x-notif-api-key'];
   var uid = req.headers['x-notif-user-id'];
   var event = req.headers['x-notif-event'];
