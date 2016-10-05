@@ -32,6 +32,7 @@ if(config.ssl.ca) options.ca = fs.readFileSync(config.ssl.ca);
 var server = https.createServer(options, app).listen(port, function(){
   console.log("Express server listening on port " + port);
 });
+
 var io = require('socket.io')(server);
 var parser = require('body-parser');
 server.listen(port);
@@ -65,14 +66,23 @@ app.post('/notifications', function(req, res, next) {
         console.log("No clients connected for user "+uid);
         return res.end();
     }
-    var socket = sockets[uid][0];
     var notif_data = {
         'text' : req.body.text,
         'link' : req.body.link,
         'subject' : req.body.subject
     };
-    socket.emit("notification", notif_data);
-    res.send();
+
+    console.log("Emitting event 'notification' to "+sockets.length+" sockets");
+    console.log(notif_data);
+
+    for(var i = 0; i < sockets[uid].length; i++) {
+        var socket = sockets[uid][0];
+        socket.emit("notification", notif_data);
+    }
+    res.send(JSON.stringify({
+        success: true,
+        count : sockets[uid].length
+    }));
 });
 
 app.post('/trigger', function(req, res, next) {
@@ -87,16 +97,22 @@ app.post('/trigger', function(req, res, next) {
   }
 
   if(!sockets[uid]) {
+    console.log("No sockets open for user '"+uid+"'");
     return res.end();
   }
 
-  var socket = sockets[uid][0];
   var notif_data = req.body;
-  console.log("Emitting socket event");
+  console.log("Emitting event '"+event+"' to "+sockets.length+" sockets");
   console.log(notif_data);
-  console.log(event);
-  socket.emit(event, notif_data);
-  res.end();
+
+  for(var i = 0 ; i < sockets[uid].length; i++) {
+      var socket = sockets[uid][i];
+      socket.emit(event, notif_data);
+  }
+  res.send(JSON.stringify({
+      success: true,
+      count : sockets[uid].length
+  }));
 })
 
 /**
@@ -104,6 +120,7 @@ app.post('/trigger', function(req, res, next) {
  */
 io.on('connection', function(socket) {
     var user_id = socket.request._query['user'];
+    console.log("Socket connected for user '"+user_id+"'");
     if(!sockets[user_id]) sockets[user_id] = [];
     sockets[user_id].push(socket);
     socket.emit('onload', 'success');
