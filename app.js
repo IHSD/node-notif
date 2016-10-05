@@ -72,7 +72,7 @@ app.post('/notifications', function(req, res, next) {
         'subject' : req.body.subject
     };
 
-    console.log("Emitting event 'notification' to "+sockets.length+" sockets");
+    console.log("Emitting event 'notification' to "+sockets[uid].length+" sockets");
     console.log(notif_data);
 
     for(var i = 0; i < sockets[uid].length; i++) {
@@ -102,7 +102,7 @@ app.post('/trigger', function(req, res, next) {
   }
 
   var notif_data = req.body;
-  console.log("Emitting event '"+event+"' to "+sockets.length+" sockets");
+  console.log("Emitting event '"+event+"' to "+sockets[uid].length+" sockets");
   console.log(notif_data);
 
   for(var i = 0 ; i < sockets[uid].length; i++) {
