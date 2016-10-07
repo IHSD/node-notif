@@ -76,7 +76,7 @@ app.post('/notifications', function(req, res, next) {
     console.log(notif_data);
 
     for(var i = 0; i < sockets[uid].length; i++) {
-        var socket = sockets[uid][0];
+        var socket = sockets[uid][i];
         socket.emit("notification", notif_data);
     }
     res.send(JSON.stringify({
@@ -107,6 +107,7 @@ app.post('/trigger', function(req, res, next) {
 
   for(var i = 0 ; i < sockets[uid].length; i++) {
       var socket = sockets[uid][i];
+      console.log(socket);
       socket.emit(event, notif_data);
   }
   res.send(JSON.stringify({
