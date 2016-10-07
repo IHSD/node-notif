@@ -126,9 +126,9 @@ io.on('connection', function(socket) {
     socket.emit('onload', 'success');
 });
 
-io.on('disconnect', function(socket) {
-    var user_id = socket.request._query['user'];
-    console.log("Socket connected for user '"+user_id+"'");
-    if(!sockets[user_id]) return;
-    sockets.splice(sockets[user_id].indexOf(socket), 1);
-});
+// io.on('disconnect', function(socket) {
+//     var user_id = socket.request._query['user'];
+//     console.log("Socket connected for user '"+user_id+"'");
+//     if(!sockets[user_id]) return;
+//     sockets.splice(sockets[user_id].indexOf(socket), 1);
+// });
